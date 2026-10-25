@@ -59,13 +59,16 @@
     label.className = 'todo-text';
     label.textContent = todo.text;
 
-    var due = null;
-    if (todo.due) {
-      due = document.createElement('span');
-      due.className = 'todo-due';
-      due.textContent = '期日: ' + todo.due;
-      due.classList.toggle('overdue', !todo.done && todo.due < today());
+    var due = document.createElement('input');
+    due.type = 'date';
+    due.className = 'todo-due';
+    due.value = todo.due;
+    due.setAttribute('aria-label', '期日');
+
+    function updateOverdue() {
+      due.classList.toggle('overdue', !todo.done && todo.due !== '' && todo.due < today());
     }
+    updateOverdue();
 
     var remove = document.createElement('button');
     remove.type = 'button';
@@ -76,9 +79,13 @@
     checkbox.addEventListener('change', function () {
       todo.done = checkbox.checked;
       item.classList.toggle('done', todo.done);
-      if (due) {
-        due.classList.toggle('overdue', !todo.done && todo.due < today());
-      }
+      updateOverdue();
+      save();
+    });
+
+    due.addEventListener('change', function () {
+      todo.due = due.value;
+      updateOverdue();
       save();
     });
 
@@ -91,9 +98,7 @@
 
     item.appendChild(checkbox);
     item.appendChild(label);
-    if (due) {
-      item.appendChild(due);
-    }
+    item.appendChild(due);
     item.appendChild(remove);
     list.appendChild(item);
   }

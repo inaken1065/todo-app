@@ -95,7 +95,9 @@ h1 {
 .todo-due {
   font-size: 13px;
   color: #666;
-  white-space: nowrap;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 2px 4px;
 }
 
 .todo-due.overdue {
