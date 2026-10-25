@@ -32,6 +32,11 @@ h1 {
   border-radius: 4px;
 }
 
+.todo-form input[type="date"] {
+  flex: none;
+  font-size: 14px;
+}
+
 .todo-form button {
   padding: 8px 16px;
   font-size: 16px;
@@ -85,4 +90,15 @@ h1 {
 
 .todo-delete:hover {
   background: #dc2626;
+}
+
+.todo-due {
+  font-size: 13px;
+  color: #666;
+  white-space: nowrap;
+}
+
+.todo-due.overdue {
+  color: #dc2626;
+  font-weight: bold;
 }

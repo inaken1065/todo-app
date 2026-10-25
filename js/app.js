@@ -5,6 +5,7 @@
 
   var form = document.getElementById('todo-form');
   var input = document.getElementById('todo-input');
+  var dueInput = document.getElementById('todo-due');
   var list = document.getElementById('todo-list');
 
   var todos = load();
@@ -18,7 +19,11 @@
       return data.filter(function (todo) {
         return todo && typeof todo.text === 'string';
       }).map(function (todo) {
-        return { text: todo.text, done: todo.done === true };
+        return {
+          text: todo.text,
+          done: todo.done === true,
+          due: typeof todo.due === 'string' ? todo.due : ''
+        };
       });
     } catch (e) {
       return [];
@@ -31,6 +36,13 @@
     } catch (e) {
       // 保存できない環境（プライベートモードなど）でも操作は継続する
     }
+  }
+
+  function today() {
+    var now = new Date();
+    var month = ('0' + (now.getMonth() + 1)).slice(-2);
+    var day = ('0' + now.getDate()).slice(-2);
+    return now.getFullYear() + '-' + month + '-' + day;
   }
 
   function renderTodo(todo) {
@@ -47,6 +59,14 @@
     label.className = 'todo-text';
     label.textContent = todo.text;
 
+    var due = null;
+    if (todo.due) {
+      due = document.createElement('span');
+      due.className = 'todo-due';
+      due.textContent = '期日: ' + todo.due;
+      due.classList.toggle('overdue', !todo.done && todo.due < today());
+    }
+
     var remove = document.createElement('button');
     remove.type = 'button';
     remove.className = 'todo-delete';
@@ -56,6 +76,9 @@
     checkbox.addEventListener('change', function () {
       todo.done = checkbox.checked;
       item.classList.toggle('done', todo.done);
+      if (due) {
+        due.classList.toggle('overdue', !todo.done && todo.due < today());
+      }
       save();
     });
 
@@ -68,12 +91,15 @@
 
     item.appendChild(checkbox);
     item.appendChild(label);
+    if (due) {
+      item.appendChild(due);
+    }
     item.appendChild(remove);
     list.appendChild(item);
   }
 
-  function addTodo(text) {
-    var todo = { text: text, done: false };
+  function addTodo(text, dueDate) {
+    var todo = { text: text, done: false, due: dueDate };
     todos.push(todo);
     renderTodo(todo);
     save();
@@ -87,8 +113,9 @@
     if (text === '') {
       return;
     }
-    addTodo(text);
+    addTodo(text, dueInput.value);
     input.value = '';
+    dueInput.value = '';
     input.focus();
   });
 })();
