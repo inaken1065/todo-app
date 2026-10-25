@@ -7,7 +7,34 @@
 
   function addTodo(text) {
     var item = document.createElement('li');
-    item.textContent = text;
+
+    var checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.className = 'todo-check';
+    checkbox.setAttribute('aria-label', '完了にする');
+
+    var label = document.createElement('span');
+    label.className = 'todo-text';
+    label.textContent = text;
+
+    var remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'todo-delete';
+    remove.textContent = '削除';
+    remove.setAttribute('aria-label', '「' + text + '」を削除');
+
+    checkbox.addEventListener('change', function () {
+      item.classList.toggle('done', checkbox.checked);
+    });
+
+    remove.addEventListener('click', function () {
+      list.removeChild(item);
+      input.focus();
+    });
+
+    item.appendChild(checkbox);
+    item.appendChild(label);
+    item.appendChild(remove);
     list.appendChild(item);
   }
 
