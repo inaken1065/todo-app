@@ -2,8 +2,34 @@ name: CI
 
 on:
   pull_request:
+    paths-ignore:
+      - '**.md'
+      - '**.txt'
+      - '**.png'
+      - '**.jpg'
+      - '**.jpeg'
+      - '**.gif'
+      - '**.svg'
+      - '**.webp'
+      - '**.ico'
+      - 'docs/**'
+      - 'LICENSE'
+      - '.gitignore'
   push:
     branches: [main]
+    paths-ignore:
+      - '**.md'
+      - '**.txt'
+      - '**.png'
+      - '**.jpg'
+      - '**.jpeg'
+      - '**.gif'
+      - '**.svg'
+      - '**.webp'
+      - '**.ico'
+      - 'docs/**'
+      - 'LICENSE'
+      - '.gitignore'
 
 jobs:
   test:
