@@ -20,6 +20,11 @@ describe('TodoItem', () => {
     expect(screen.getByText('掃除')).toBeInTheDocument();
   });
 
+  it('狭い幅でも文字が縦に潰れないよう、テキストに最小の基準幅を持たせる', () => {
+    setup();
+    expect(screen.getByText('掃除')).toHaveClass('basis-32');
+  });
+
   it('チェックで done を通知する', async () => {
     const { onChange } = setup();
     await userEvent.click(screen.getByLabelText('完了にする'));
