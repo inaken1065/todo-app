@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
-import FilterTabs from './FilterTabs.jsx';
+import FilterTabs from '../../components/FilterTabs.jsx';
 
 describe('FilterTabs', () => {
   it('選択中のタブが aria-pressed になる', () => {

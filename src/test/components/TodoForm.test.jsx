@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
-import TodoForm from './TodoForm.jsx';
+import TodoForm from '../../components/TodoForm.jsx';
 
 describe('TodoForm', () => {
   it('前後の空白を除去して追加し、入力をクリアしてフォーカスを戻す', async () => {

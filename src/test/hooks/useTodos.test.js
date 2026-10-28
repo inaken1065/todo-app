@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { useTodos } from './useTodos.js';
+import { useTodos } from '../../hooks/useTodos.js';
 
 const KEY = 'todo-app.todos';
 

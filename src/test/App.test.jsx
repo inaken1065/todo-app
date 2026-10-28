@@ -1,7 +1,7 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
-import App from './App.jsx';
+import App from '../App.jsx';
 
 async function add(text) {
   await userEvent.type(screen.getByLabelText('やること'), text);

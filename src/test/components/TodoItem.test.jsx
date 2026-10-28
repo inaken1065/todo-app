@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import TodoItem from './TodoItem.jsx';
+import TodoItem from '../../components/TodoItem.jsx';
 
 const base = { id: '1', text: '掃除', done: false, due: '' };
 

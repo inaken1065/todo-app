@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { dueStatus, today } from './date.js';
+import { dueStatus, today } from '../../lib/date.js';
 
 afterEach(() => vi.useRealTimers());
 
