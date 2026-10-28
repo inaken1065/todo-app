@@ -15,8 +15,14 @@ export default function TodoItem({ todo, onChange, onRemove }) {
   const [memoOpen, setMemoOpen] = useState(todo.memo !== '');
 
   return (
-    <li className="flex flex-col gap-2 rounded-xl bg-white px-4 py-3 shadow-sm ring-1 ring-slate-200 transition dark:bg-slate-800 dark:ring-slate-700">
-      <div className="flex items-center gap-3">
+    <li
+      draggable
+      onDragStart={(e) => {
+        e.dataTransfer.setData('text/plain', todo.id);
+        e.dataTransfer.effectAllowed = 'move';
+      }}
+      className="flex cursor-grab flex-col gap-2 rounded-xl bg-white px-4 py-3 shadow-sm ring-1 ring-slate-200 transition dark:bg-slate-800 dark:ring-slate-700">
+      <div className="flex flex-wrap items-center gap-3">
         <input
           type="checkbox"
           checked={todo.done}
@@ -25,7 +31,7 @@ export default function TodoItem({ todo, onChange, onRemove }) {
           className="size-5 shrink-0 cursor-pointer accent-blue-600"
         />
         <span
-          className={`min-w-0 flex-1 break-words ${
+          className={`min-w-0 flex-1 basis-32 break-words ${
             todo.done ? 'text-slate-400 line-through dark:text-slate-500' : ''
           }`}
         >

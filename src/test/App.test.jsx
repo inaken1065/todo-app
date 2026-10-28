@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import App from '../App.jsx';
@@ -71,5 +71,70 @@ describe('App', () => {
     unmount();
     render(<App />);
     expect(screen.getByText('永続')).toBeInTheDocument();
+  });
+
+  describe('セクションと看板表示', () => {
+    const dt = () => ({ data: {}, setData(k, v) { this.data[k] = v; }, getData(k) { return this.data[k]; }, effectAllowed: '' });
+
+    function drag(card, sectionName) {
+      const dataTransfer = dt();
+      fireEvent.dragStart(card, { dataTransfer });
+      const target = screen.getByRole('region', { name: sectionName });
+      fireEvent.dragOver(target, { dataTransfer });
+      fireEvent.drop(target, { dataTransfer });
+    }
+
+    it('リスト表示では3つのセクションにタスクが振り分けられる', async () => {
+      render(<App />);
+      await add('A');
+      expect(within(screen.getByRole('region', { name: '未着手' })).getByText('A')).toBeInTheDocument();
+      expect(within(screen.getByRole('region', { name: '進行中' })).queryByText('A')).not.toBeInTheDocument();
+      expect(screen.getByRole('region', { name: '完了' })).toBeInTheDocument();
+    });
+
+    it('リストでドラッグしてセクションを移動できる', async () => {
+      render(<App />);
+      await add('A');
+      drag(screen.getByText('A').closest('li'), '進行中');
+      expect(within(screen.getByRole('region', { name: '進行中' })).getByText('A')).toBeInTheDocument();
+    });
+
+    it('完了セクションへ移動すると完了扱いになり残り件数が減る', async () => {
+      render(<App />);
+      await add('A');
+      drag(screen.getByText('A').closest('li'), '完了');
+      expect(screen.getByLabelText('完了にする')).toBeChecked();
+      expect(screen.getByText('残り 0 件')).toBeInTheDocument();
+    });
+
+    it('チェックを入れると完了セクションへ移る', async () => {
+      render(<App />);
+      await add('A');
+      await userEvent.click(screen.getByLabelText('完了にする'));
+      expect(within(screen.getByRole('region', { name: '完了' })).getByText('A')).toBeInTheDocument();
+    });
+
+    it('看板表示に切り替えてもドラッグで移動できる', async () => {
+      render(<App />);
+      await add('A');
+      await userEvent.click(screen.getByRole('button', { name: '看板' }));
+      expect(screen.getByRole('button', { name: '看板' })).toHaveAttribute('aria-pressed', 'true');
+      drag(screen.getByText('A').closest('li'), '進行中');
+      expect(within(screen.getByRole('region', { name: '進行中' })).getByText('A')).toBeInTheDocument();
+
+      await userEvent.click(screen.getByRole('button', { name: 'リスト' }));
+      expect(within(screen.getByRole('region', { name: '進行中' })).getByText('A')).toBeInTheDocument();
+    });
+
+    it('フィルタは看板表示にも効く', async () => {
+      render(<App />);
+      await add('A');
+      await add('B');
+      await userEvent.click(screen.getAllByLabelText('完了にする')[0]);
+      await userEvent.click(screen.getByRole('button', { name: '看板' }));
+      await userEvent.click(screen.getByRole('button', { name: '未完了' }));
+      expect(screen.queryByText('A')).not.toBeInTheDocument();
+      expect(screen.getByText('B')).toBeInTheDocument();
+    });
   });
 });
