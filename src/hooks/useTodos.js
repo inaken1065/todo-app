@@ -13,6 +13,7 @@ function load() {
         text: todo.text,
         done: todo.done === true,
         due: typeof todo.due === 'string' ? todo.due : '',
+        memo: typeof todo.memo === 'string' ? todo.memo : '',
       }));
   } catch {
     return [];
@@ -31,7 +32,7 @@ export function useTodos() {
   }, [todos]);
 
   const addTodo = (text, due) =>
-    setTodos((prev) => [...prev, { id: crypto.randomUUID(), text, done: false, due }]);
+    setTodos((prev) => [...prev, { id: crypto.randomUUID(), text, done: false, due, memo: '' }]);
 
   const updateTodo = (id, patch) =>
     setTodos((prev) => prev.map((t) => (t.id === id ? { ...t, ...patch } : t)));

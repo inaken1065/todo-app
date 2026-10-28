@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import TodoItem from '../../components/TodoItem.jsx';
 
-const base = { id: '1', text: '掃除', done: false, due: '' };
+const base = { id: '1', text: '掃除', done: false, due: '', memo: '' };
 
 function setup(todo = {}) {
   const onChange = vi.fn();
@@ -67,5 +67,33 @@ describe('TodoItem', () => {
   it('完了済みなら期限切れでもバッジを出さない', () => {
     setup({ due: '2000-01-01', done: true });
     expect(screen.queryByText('期限切れ')).not.toBeInTheDocument();
+  });
+
+  it('メモは初期状態で閉じている', () => {
+    setup();
+    expect(screen.queryByLabelText('メモ')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'メモ' })).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('メモボタンで入力欄を開閉する', async () => {
+    setup();
+    const toggle = screen.getByRole('button', { name: 'メモ' });
+    await userEvent.click(toggle);
+    expect(screen.getByLabelText('メモ')).toBeInTheDocument();
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await userEvent.click(toggle);
+    expect(screen.queryByLabelText('メモ')).not.toBeInTheDocument();
+  });
+
+  it('メモがあれば最初から入力欄を表示する', () => {
+    setup({ memo: '牛乳も' });
+    expect(screen.getByLabelText('メモ')).toHaveValue('牛乳も');
+  });
+
+  it('メモ変更を通知する', async () => {
+    const { onChange } = setup();
+    await userEvent.click(screen.getByRole('button', { name: 'メモ' }));
+    await userEvent.type(screen.getByLabelText('メモ'), 'a');
+    expect(onChange).toHaveBeenLastCalledWith({ memo: 'a' });
   });
 });

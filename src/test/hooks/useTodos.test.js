@@ -14,7 +14,7 @@ describe('useTodos', () => {
     const { result } = renderHook(() => useTodos());
     act(() => result.current.addTodo('買い物', '2026-01-01'));
     const [todo] = result.current.todos;
-    expect(todo).toMatchObject({ text: '買い物', done: false, due: '2026-01-01' });
+    expect(todo).toMatchObject({ text: '買い物', done: false, due: '2026-01-01', memo: '' });
 
     act(() => result.current.updateTodo(todo.id, { done: true }));
     expect(result.current.todos[0].done).toBe(true);
@@ -56,15 +56,15 @@ describe('useTodos', () => {
     localStorage.setItem(
       KEY,
       JSON.stringify([
-        { id: 'x', text: 'ok', done: true, due: '2026-01-01' },
-        { text: 'no-id', done: 'yes', due: 5 },
+        { id: 'x', text: 'ok', done: true, due: '2026-01-01', memo: 'メモ' },
+        { text: 'no-id', done: 'yes', due: 5, memo: 9 },
         { text: 123 },
         null,
       ]),
     );
     const { result } = renderHook(() => useTodos());
     expect(result.current.todos).toHaveLength(2);
-    expect(result.current.todos[0]).toEqual({ id: 'x', text: 'ok', done: true, due: '2026-01-01' });
+    expect(result.current.todos[0]).toEqual({ id: 'x', text: 'ok', done: true, due: '2026-01-01', memo: 'メモ' });
     expect(result.current.todos[1]).toMatchObject({ text: 'no-id', done: false, due: '' });
     expect(typeof result.current.todos[1].id).toBe('string');
   });
